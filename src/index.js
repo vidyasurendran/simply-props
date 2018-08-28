@@ -1,9 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css';
+import Container from './Container'
 import { createStore } from 'redux'
+import { Provider } from 'react-redux'
 
-//Reducer
+
 const reducer = (state = 0, action) => {
     switch (action.type) {
         case 'INCREMENT':
@@ -15,27 +17,18 @@ const reducer = (state = 0, action) => {
     }
 }
 
-//Store
-const store = createStore(reducer);
+const store = createStore(
+    reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
-//Container component
-const Container = ({ count, onIncrement, onDecrement }) => <div> Count: {count}
-    <button onClick={onIncrement}>+</button>
-    <button onClick={onDecrement}>-</button></div>
-
-//App Component
-class App extends React.Component {
-    render() {
-        return (
-            <Container
-                count={store.getState()}
-                onIncrement={() => store.dispatch({ type: 'INCREMENT' })}
-                onDecrement={() => store.dispatch({ type: 'DECREMENT' })}
-            />
-        );
+    class App extends React.Component {
+        render() {
+            return (
+                <Provider store={store}>
+                    <Container />
+                </Provider>
+            );
+        }
     }
-}
 
-const render = () => ReactDOM.render(<App />, document.getElementById('root'));
-render()
-store.subscribe(render)
+ReactDOM.render(<App />, document.getElementById('root'));
